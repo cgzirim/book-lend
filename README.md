@@ -1,5 +1,5 @@
 # Book Lend
-The Book Lend Application is a technical assessment built on a microservices architecture, aimed at streamlining the lending and management of books. It utilizes RabbitMQ as a message broker to enable communication between the two services: [admin_api](https://github.com/cgzirim/book-lend/tree/main/admin_api) and [frontend_api](https://github.com/cgzirim/book-lend/tree/main/frontend_api).
+The Book Lend Application is built on a microservices architecture, aimed at streamlining the lending and management of books. It utilizes RabbitMQ as a message broker to enable communication between the two services: [admin_api](https://github.com/cgzirim/book-lend/tree/main/admin_api) and [frontend_api](https://github.com/cgzirim/book-lend/tree/main/frontend_api).
 
 ## Installation and Running
 
