@@ -11,7 +11,7 @@ The Book Lend Application is built on a microservices architecture, aimed at str
 
 1. **Clone the Repository**
    ```bash
-   git clone git@github.com:cgzirim/book-lend.git
+   git clone https://github.com/cgzirim/book-lend.git
    cd book-lend-app
    ```
 2. **Build and Run the Application**
