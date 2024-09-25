@@ -60,8 +60,7 @@ class RBMQ:
                 logger.error(
                     f"Connection to RabbitMQ failed: {e}. Retrying {retry_count}/5..."
                 )
-                # time.sleep(retry_count)
-                time.sleep(0)
+                time.sleep(retry_count)
 
         if retry_count == 5:
             logger.critical("Failed to establish RabbitMQ connection after retries.")
