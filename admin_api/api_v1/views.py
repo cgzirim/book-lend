@@ -1,5 +1,4 @@
 from django.utils import timezone
-from datetime import timedelta, datetime
 from drf_spectacular.utils import extend_schema
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
@@ -125,7 +124,7 @@ class LoginView(GenericAPIView):
         self.serializer.is_valid(raise_exception=True)
 
         user = self.serializer.validated_data["user"]
-        user.last_login = datetime.now()
+        user.last_login = timezone.now()
         data = get_login_data(user)
 
         return Response(data, status=status.HTTP_200_OK)
