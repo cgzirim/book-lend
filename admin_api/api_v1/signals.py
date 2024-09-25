@@ -18,6 +18,7 @@ rbmq_client = get_rbmq_client(exchange_name="admin_api")
 def publish_book_created_updated_event(sender, instance, created, **kwargs):
     serializer = BookSerializer(instance)
     book_data = convert_to_serializable(serializer.data)
+    book_data.pop("available_on")
 
     event_data = {"book": book_data}
 
