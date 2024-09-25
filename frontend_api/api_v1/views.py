@@ -26,10 +26,11 @@ from api_v1.serializers import (
     RegisterSerializer,
     LoginSerializer,
     LogoutSerializer,
+    UserSerializer,
 )
 
 
-@extend_schema(tags=["Frontend_api"])
+@extend_schema(tags=["Frontend_api"], summary="List all available books")
 class ListBooksView(ListAPIView):
     queryset = Book.objects.filter(is_available=True)
     serializer_class = BookSerializer
@@ -39,13 +40,13 @@ class ListBooksView(ListAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
 
 
-@extend_schema(tags=["Frontend_api"])
+@extend_schema(tags=["Frontend_api"], summary="Get a single book by its ID")
 class RetrieveBookView(RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
 
-@extend_schema(tags=["Frontend_api"])
+@extend_schema(tags=["Frontend_api"], summary="Borrow book by id")
 class BorrowBookView(CreateAPIView):
     permission_classes = []
     queryset = BorrowedBook.objects.all()
@@ -55,15 +56,9 @@ class BorrowBookView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        try:
-            book = Book.objects.get(id=data["book"], is_available=True)
-        except Book.DoesNotExist:
-            return Response(
-                {"detail": "This book is not available."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        book = data["book"]
 
-        borrow_days = data["days"]
+        borrow_days = data.pop("days")
         due_date = timezone.now() + timedelta(days=borrow_days)
 
         serializer.save(due_date=due_date)
@@ -92,14 +87,10 @@ def get_login_data(user):
     access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
     refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
 
-    user_data = {
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "last_login": user.last_login,
-    }
+    user_serializer = UserSerializer(user)
 
     data = {
-        "user": user_data,
+        "user": user_serializer.data,
         "access": str(access_token),
         "refresh": str(refresh_token),
         "access_expiration": access_token_expiration,
@@ -109,7 +100,7 @@ def get_login_data(user):
     return data
 
 
-@extend_schema(tags=["Auth"])
+@extend_schema(tags=["Auth"], summary="Enroll user into the library")
 class RegisterView(CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
@@ -146,6 +137,8 @@ class LoginView(GenericAPIView):
 
         user = self.serializer.validated_data["user"]
         user.last_login = datetime.now()
+        user.save()
+
         data = get_login_data(user)
 
         return Response(data, status=status.HTTP_200_OK)
