@@ -20,6 +20,7 @@ from rest_framework.generics import (
 )
 
 from api_v1.serializers import (
+    AdminSerializer,
     BookSerializer,
     BorrowedBookSerializer,
     RegisterSerializer,
@@ -75,14 +76,10 @@ def get_login_data(user):
     access_token_expiration = timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME
     refresh_token_expiration = timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME
 
-    user_data = {
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "last_login": user.last_login,
-    }
+    serializer = AdminSerializer(user)
 
     data = {
-        "user": user_data,
+        "user": serializer.data,
         "access": str(access_token),
         "refresh": str(refresh_token),
         "access_expiration": access_token_expiration,
