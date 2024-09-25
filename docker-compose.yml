@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+  
+  admin_api:
+    build:
+      context: ./admin_api
+    container_name: admin_api
+    command: sh ./start.sh
+    volumes:
+      - ./admin_api:/code
+    ports:
+      - "7000:7000"
+    depends_on:
+      - rabbitmq
+    environment:
+      RBMQ_HOST: rabbitmq
+      RBMQ_PORT: 5672
+      RBMQ_USER: guest
+      RBMQ_PWD: guest
+
+  frontend_api:
+    build:
+      context: ./frontend_api
+    container_name: frontend_api
+    command: sh ./start.sh
+    volumes:
+      - ./frontend_api:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - admin_api
+    environment:
+      RBMQ_HOST: rabbitmq
+      RBMQ_PORT: 5672
+      RBMQ_USER: guest
+      RBMQ_PWD: guest
