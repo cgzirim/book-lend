@@ -36,8 +36,8 @@ The Book Lend Application is a technical assessment built on a microservices arc
 <div class="image-container">
         <img src="https://github.com/user-attachments/assets/74571c34-6199-4a19-93ce-e57e5b07ad2c" 
              alt="admin_api" 
-             width="500">
+             width="400">
         <img src="https://github.com/user-attachments/assets/74091f8e-b2cd-4737-9dcc-6d68f68b0bcc" 
              alt="frontend_api" 
-             width="500">
+             width="400">
 </div>
