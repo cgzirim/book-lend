@@ -51,6 +51,7 @@ def handle_borrowed_book_created(ch, method, properties, body):
 def handle_user_event(ch, method, properties, body):
     event_data = json.loads(body)
     user_data = event_data.get("user")
+
     action = event_data.get("action")
 
     if action == "created":
@@ -60,4 +61,5 @@ def handle_user_event(ch, method, properties, body):
     elif action == "deleted":
         User.objects.filter(id=user_data["id"]).delete()
 
-    logger.info(f"{action.title()} user: {user_data['email']}")
+    if action:
+        logger.info(f"{action.title()} user: {user_data['email']}")
