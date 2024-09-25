@@ -40,9 +40,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class BorrowedBookSerializer(serializers.ModelSerializer):
+    available_on = serializers.SerializerMethodField()
+
     class Meta:
         model = BorrowedBook
         fields = "__all__"
+
+    def get_available_on(self, borrowed_book):
+        """Calculate the date when the book will be available again."""
+        due_date = borrowed_book.due_date
+        date_available = due_date + timedelta(days=1)
+        return date_available
 
 
 class RegisterSerializer(serializers.ModelSerializer):
