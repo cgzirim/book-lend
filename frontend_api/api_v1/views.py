@@ -136,7 +136,7 @@ class LoginView(GenericAPIView):
         self.serializer.is_valid(raise_exception=True)
 
         user = self.serializer.validated_data["user"]
-        user.last_login = datetime.now()
+        user.last_login = timezone.now()
         user.save()
 
         data = get_login_data(user)
