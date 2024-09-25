@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate
@@ -6,10 +8,29 @@ from django.contrib.auth.password_validation import validate_password
 from api_v1.models import Admin, Book, BorrowedBook, User
 
 
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ["id", "email", "first_name", "last_name", "is_active", "last_login"]
+
+
 class BookSerializer(serializers.ModelSerializer):
+    available_on = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
         fields = "__all__"
+
+    def get_available_on(self, book):
+        """Calculate the date when the book will be available again."""
+        if not book.is_available:
+            borrowed_book = BorrowedBook.objects.filter(book=book).first()
+            if borrowed_book:
+                due_date = borrowed_book.due_date
+                date_available = due_date + timedelta(days=1)
+                return date_available
+
+        return timezone.now()
 
 
 class UserSerializer(serializers.ModelSerializer):
