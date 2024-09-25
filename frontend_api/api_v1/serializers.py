@@ -20,6 +20,18 @@ class BorrowedBookSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["due_date"]
 
+    def validate_book(self, book):
+        if not book.is_available:
+            raise serializers.ValidationError("This book is not available.")
+
+        return book
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name", "is_active", "last_login"]
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
