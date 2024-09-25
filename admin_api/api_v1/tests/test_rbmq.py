@@ -31,7 +31,7 @@ class EventHandlerTest(TestCase):
         body = json.dumps({"book": {"id": str(book.id), "is_available": False}})
         handle_book_updated(None, None, None, body)
 
-        book = Book.objects.get(id=book.id)
+        book.refresh_from_db()
 
         self.assertFalse(book.is_available)
 
