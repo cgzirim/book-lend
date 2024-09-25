@@ -20,6 +20,10 @@ class BorrowedBookSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["due_date"]
 
+    def validate_days(self, days):
+        if days <= 0:
+            raise serializers.ValidationError("Value must be greated than 0.")
+
     def validate_book(self, book):
         if not book.is_available:
             raise serializers.ValidationError("This book is not available.")
